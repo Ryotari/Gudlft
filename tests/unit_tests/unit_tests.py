@@ -1,3 +1,5 @@
+from server import loadClubs, loadCompetitions
+
 def test_display_home_page(client):
     response = client.get('/')
     assert response.status_code == 200
@@ -13,3 +15,16 @@ def test_invalid_email_error(client):
     response = client.post('/showSummary', data={'email': 'test@simplylift.com'}, follow_redirects=True)
     assert response.status_code == 200
     assert b'Invalid email error' in response.data
+
+def test_load_clubs(client):
+    list_of_clubs = loadClubs()
+    assert "'name': 'Simply Lift'" in str(list_of_clubs[0])
+
+def test_load_competitions(client):
+    list_of_competitions = loadCompetitions()
+    assert "'name': 'Spring Festival'" in str(list_of_competitions[0])
+
+def test_display_points(client):
+    response = client.get('/displayPoints')
+    assert response.status_code == 200
+    assert b"Number of Points" in response.data
