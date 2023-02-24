@@ -1,4 +1,4 @@
-from server import loadClubs, loadCompetitions
+from server import loadClubs, loadCompetitions, sort_competitions_date
 
 def test_display_home_page(client):
     response = client.get('/')
@@ -23,6 +23,12 @@ def test_load_clubs(client):
 def test_load_competitions(client):
     list_of_competitions = loadCompetitions()
     assert "'name': 'Spring Festival'" in str(list_of_competitions[0])
+
+def test_sort_competitions(client):
+    comps = loadCompetitions()
+    past_competitions, present_competitions = sort_competitions_date(comps)
+    assert len(past_competitions) >= 1
+    assert len(present_competitions) >= 1
 
 def test_display_points(client):
     response = client.get('/displayPoints')
