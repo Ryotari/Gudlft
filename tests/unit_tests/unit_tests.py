@@ -1,14 +1,16 @@
 from server import loadClubs, loadCompetitions, sort_competitions_date
+from tests.conftest import client, app, test_club, test_comp
 
 def test_display_home_page(client):
     response = client.get('/')
     assert response.status_code == 200
     assert b'Welcome to the GUDLFT Registration Portal!' in response.data
 
-def test_login_with_valid_email(client):
-    response = client.post('/showSummary', data={'email': "admin@irontemple.com"})
+def test_login_with_valid_email(client, test_club, test_comp):
+    club = test_club[0]
+    response = client.post('/showSummary', data={'email': club['email']})
     assert response.status_code == 200
-    assert b"Welcome, admin@irontemple.com" in response.data
+    assert b"Welcome, john@simplylift.co" in response.data
 
 def test_invalid_email_error(client):
 
@@ -30,7 +32,7 @@ def test_sort_competitions(client):
     assert len(past_competitions) >= 1
     assert len(present_competitions) >= 1
 
-def test_display_points(client):
+def test_display_points_without_login(client):
     response = client.get('/displayPoints')
     assert response.status_code == 200
     assert b"Number of Points" in response.data
